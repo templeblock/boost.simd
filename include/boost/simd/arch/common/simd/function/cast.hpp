@@ -1,12 +1,10 @@
 //==================================================================================================
-/*!
-  @file
-
+/**
   Copyright 2016 NumScale SAS
 
   Distributed under the Boost Software License, Version 1.0.
   (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
-*/
+**/
 //==================================================================================================
 #ifndef BOOST_SIMD_ARCH_COMMON_SIMD_FUNCTION_CAST_HPP_INCLUDED
 #define BOOST_SIMD_ARCH_COMMON_SIMD_FUNCTION_CAST_HPP_INCLUDED
@@ -23,6 +21,7 @@
 #include <boost/simd/function/if_allbits_else_zero.hpp>
 #include <boost/simd/function/interleave.hpp>
 #include <boost/simd/function/interleave_first.hpp>
+#include <boost/simd/function/deinterleave_first.hpp>
 #include <boost/simd/function/is_ltz.hpp>
 #include <boost/simd/constant/zero.hpp>
 
@@ -64,7 +63,6 @@ namespace boost { namespace simd { namespace ext
 
     BOOST_FORCEINLINE result do_(A0 const& a0, std::true_type const& ) const BOOST_NOEXCEPT
     {
-      std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in NO_CAST" << std::endl;
       return a0;
     }
   };
@@ -78,11 +76,9 @@ namespace boost { namespace simd { namespace ext
                              )
   {
     using result = typename A0::template rebind<typename A1::type>;
-
     BOOST_FORCEINLINE result operator()(A0 const& a0, A1 const& ) const BOOST_NOEXCEPT
     {
-      std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in SIGNED->UNSIGNED" << std::endl;
-      return a0.storage();
+      return bitwise_cast<result>(a0);
     }
   };
 
@@ -98,8 +94,7 @@ namespace boost { namespace simd { namespace ext
 
     BOOST_FORCEINLINE result operator()(A0 const& a0, A1 const& ) const BOOST_NOEXCEPT
     {
-      std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in UNSIGNED->SIGNED" << std::endl;
-      return a0.storage();
+      return bitwise_cast<result>(a0);
     }
   };
 
@@ -116,11 +111,10 @@ namespace boost { namespace simd { namespace ext
                          )
   {
     using result = typename A0::template rebind<typename A1::type>;
-    using siA1 = bd::as_integer_t<typename A1::type, signed>;
     BOOST_FORCEINLINE result operator() ( const A0 & a0, A1 const& ) const BOOST_NOEXCEPT
     {
       std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 00" << std::endl;
-      return cast<siA1>(a0).storage();
+      return bitwise_cast<result>(cast<bd::as_integer_t<typename A1::type, signed>>(a0));
     }
   };
 
@@ -319,7 +313,7 @@ namespace boost { namespace simd { namespace ext
     {
       std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 9" << std::endl;
       using p8 = pack<typename A1::type, A0::static_size*2>;
-      return slice_low( deinterleave_first(p8(a0.storage()), Zero<p8>()));
+      return slice_low( deinterleave_first(bitwise_cast<p8>(a0), Zero<p8>()));
     }
   };
 
@@ -346,22 +340,43 @@ namespace boost { namespace simd { namespace ext
  //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  // (u)int8 --> int16
+  // int8 --> int16
   BOOST_DISPATCH_OVERLOAD_IF ( cast_
                           , (typename A0, typename A1, typename X)
                           , (detail::is_native<X>)
                           , bd::cpu_
-                          , bs::pack_<bd::ints8_<A0>, X>
+                          , bs::pack_<bd::int8_<A0>, X>
                           , bd::target_< bd::scalar_< bd::int16_<A1> > >
                          )
   {
     using result = typename A0::template rebind<typename A1::type>;
     BOOST_FORCEINLINE result operator() ( const A0 & a0, A1 const& ) const BOOST_NOEXCEPT
     {
-      std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 11" << std::endl;
-       using p16 = pack<typename A1::type, A0::static_size/2>;
-       auto x = interleave(a0, if_allbits_else_zero(is_ltz(a0)));
-       return combine(p16(x[0].storage()), p16(x[1].storage()));
+      std::cout << "YYYYtarget " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 11" << std::endl;
+      using p16 = pack<typename A1::type, A0::static_size/2>;
+      auto x = interleave(if_allbits_else_zero(is_ltz(a0)),a0);
+
+      return combine(bitwise_cast<p16>(x[0]), bitwise_cast<p16>(x[1]));
+    }
+  };
+
+  // uint8 --> int16
+  BOOST_DISPATCH_OVERLOAD_IF ( cast_
+                          , (typename A0, typename A1, typename X)
+                          , (detail::is_native<X>)
+                          , bd::cpu_
+                          , bs::pack_<bd::uint8_<A0>, X>
+                          , bd::target_< bd::scalar_< bd::int16_<A1> > >
+                         )
+  {
+    using result = typename A0::template rebind<typename A1::type>;
+    BOOST_FORCEINLINE result operator() ( const A0 & a0, A1 const& ) const BOOST_NOEXCEPT
+    {
+      std::cout << "XXXtarget " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 11" << std::endl;
+      using p16 = pack<typename A1::type, A0::static_size/2>;
+      auto x = interleave(Zero<A0>(),a0);
+
+      return combine(bitwise_cast<p16>(x[0]), bitwise_cast<p16>(x[1]));
     }
   };
 
@@ -380,7 +395,7 @@ namespace boost { namespace simd { namespace ext
       std::cout << "target " << detail::type_id<typename A1::type>() <<  " from " << detail::type_id<typename A0::value_type>() <<  " in 12" << std::endl;
       using pu16 = pack<typename A1::type, A0::static_size/2>;
       auto x = interleave(a0, if_allbits_else_zero(is_ltz(a0)));
-      return combine(pu16(x[0].storage()), pu16(x[1].storage()));
+      return combine(bitwise_cast<pu16>(x[0]), bitwise_cast<pu16>(x[1]));
     }
   };
 

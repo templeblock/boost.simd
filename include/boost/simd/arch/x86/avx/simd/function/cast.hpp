@@ -53,7 +53,7 @@ namespace boost { namespace simd { namespace ext
                           , (typename A0, typename A1)
                           , bs::avx_
                           , bs::pack_<bd::int32_<A0>,bs::sse_>
-                          , bd::target_<bd::scalar_<bd::single_<A1>>>
+                          , bd::target_<bd::scalar_<bd::double_<A1>>>
                           )
   {
     using result = typename A0::template rebind<typename A1::type>;
@@ -67,7 +67,7 @@ namespace boost { namespace simd { namespace ext
   // bitwise cvt double->int32
   BOOST_DISPATCH_OVERLOAD ( cast_
                           , (typename A0, typename A1)
-                          , bs::sse_
+                          , bs::avx_
                           , bs::pack_<bd::double_<A0>,bs::avx_>
                           , bd::target_<bd::scalar_<bd::int32_<A1>>>
                           )
@@ -83,7 +83,7 @@ namespace boost { namespace simd { namespace ext
   // bitwise cvt double->float
   BOOST_DISPATCH_OVERLOAD ( cast_
                           , (typename A0, typename A1)
-                          , bs::sse_
+                          , bs::avx_
                           , bs::pack_<bd::double_<A0>,bs::avx_>
                           , bd::target_<bd::scalar_<bd::single_<A1>>>
                           )
@@ -91,7 +91,7 @@ namespace boost { namespace simd { namespace ext
     using result = typename A0::template rebind<typename A1::type>;
     BOOST_FORCEINLINE result operator()(A0 const& a0, A1 const&) const BOOST_NOEXCEPT
     {
-      return _mm256_cvttpd_ps(a0);
+      return _mm256_cvtpd_ps(a0);
     }
   };
 
@@ -107,7 +107,7 @@ namespace boost { namespace simd { namespace ext
     using result = typename A0::template rebind<typename A1::type>;
     BOOST_FORCEINLINE result operator()(A0 const& a0, A1 const&) const BOOST_NOEXCEPT
     {
-      return _mm256_cvttps_pd(a0);
+      return _mm256_cvtps_pd(a0);
     }
   };
 
