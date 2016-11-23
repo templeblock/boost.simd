@@ -12,6 +12,16 @@
 #include <algorithm>
 #include <simd_test.hpp>
 
+STF_CASE_TPL( "Check make(a0)", STF_NUMERIC_TYPES )
+{
+  namespace bs = boost::simd;
+
+  std::array<T,1> ref = {{ T(1) }};
+  auto p = bs::make<bs::pack<T,1>>(1);
+
+  STF_ALL_EQUAL(p, ref);
+}
+
 STF_CASE_TPL( "Check make(a0,a1)", STF_NUMERIC_TYPES )
 {
   namespace bs = boost::simd;
