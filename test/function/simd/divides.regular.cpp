@@ -11,7 +11,6 @@
 #include <boost/simd/function/saturated.hpp>
 #include <boost/simd/meta/cardinal_of.hpp>
 #include <simd_test.hpp>
-#include <boost/simd/function/fast.hpp>
 #include <boost/simd/function/saturated.hpp>
 #include <boost/simd/constant/inf.hpp>
 #include <boost/simd/constant/minf.hpp>
