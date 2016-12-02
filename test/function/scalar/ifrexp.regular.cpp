@@ -8,7 +8,6 @@
 */
 //==================================================================================================
 #include <boost/simd/function/scalar/ifrexp.hpp>
-#include <boost/simd/function/fast.hpp>
 #include <boost/simd/function/std.hpp>
 #include <scalar_test.hpp>
 #include <boost/simd/detail/dispatch/meta/as_integer.hpp>

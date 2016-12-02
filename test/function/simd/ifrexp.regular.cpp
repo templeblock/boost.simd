@@ -8,7 +8,6 @@
 //==================================================================================================
 #include <boost/simd/pack.hpp>
 #include <boost/simd/function/ifrexp.hpp>
-#include <boost/simd/function/fast.hpp>
 #include <tuple>
 #include <utility>
 #include <simd_test.hpp>

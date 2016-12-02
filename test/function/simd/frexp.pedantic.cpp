@@ -8,7 +8,6 @@
 //==================================================================================================
 #include <boost/simd/pack.hpp>
 #include <boost/simd/function/frexp.hpp>
-#include <boost/simd/function/fast.hpp>
 #include <boost/simd/function/tofloat.hpp>
 #include <tuple>
 #include <utility>
