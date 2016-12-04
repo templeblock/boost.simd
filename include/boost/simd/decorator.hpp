@@ -25,10 +25,8 @@ namespace boost { namespace simd
        modify the behaviour of some functors. Use of a functor with no decorator
        is often referred as "regular".
 
-
        These are pedantic_, raw_, restricted_,  saturated_, std_.
        (musl_ and plain_ also exist, but are used in an internal way).
-
 
        if a decorator `foo_` has to be called to modify the functor `bar` the call
 
@@ -58,7 +56,7 @@ namespace boost { namespace simd
 
     - pedantic_ implies
 
-        if a standard exists the function is as conformant as possible whatever the
+        if a standard exists the fonction is as conformant as possible whatever the
         loss in performances can be.
 
     - std_
