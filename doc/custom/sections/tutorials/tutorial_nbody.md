@@ -70,3 +70,4 @@ There are very few problems where these theorethical speed-ups are obtainable.
 
 <div style="text-align: right;" markdown="1">Prev: [Evaluation of a Neural Network](@ref tutorial-neural)</div>
 <div style="text-align: right;" markdown="1">Next: [Runtime Extension Selection](@ref tutorial-runtime)</div>
+
