@@ -35,7 +35,14 @@ struct activation_function{
 
 int main(int argc, char **argv){
   using T = float;
-  int size = std::atoi(argv[1]);
+  int size;
+  if (argc <= 1)
+  {
+    std::cout << " no command line parameter : using a sample size of 16000000" << std::endl;
+    size = 16000000;
+  }
+  else
+    size = std::atoi(argv[1]);
   std::vector<T, bs::allocator<T>> activations(size);
   std::vector<T, bs::allocator<T>> results(size);
 
