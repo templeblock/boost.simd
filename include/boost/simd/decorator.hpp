@@ -22,7 +22,10 @@ namespace boost { namespace simd
 
     @par Rationale
        Up to now we have five different decorators that can be used to
-       modify the behaviour of some functors.
+       modify the behaviour of some functors. Use of a functor with no decorator
+       is often referred as "regular".
+
+       musl_ and plain_ also exist, but are used in an internal way.
 
        These are pedantic_, raw_, restricted_,  saturated_, std_
 
@@ -37,6 +40,55 @@ namespace boost { namespace simd
          @code
           z = foo_(bar)(< bar parameters >);
          @endcode
+
+    - raw_ implies
+
+       possibly big loss of accuracy, loss of correctness for not "normal" values
+       and don't care of limiting cases. The purpose of raw_ is to maximize the speed
+       using at hand functions (often intrinsics).
+
+    - regular (no decorator) implies
+
+        possibly a loss of correctness for not "normal" values (except zero) and
+        limiting cases that are treated in a way not always conformant to standard (if it exists).
+        The purpose of the regular way is to maximize the speed (but with few ulp losses
+        with "normal" and zero parameters) and treating corner cases only if the
+        performance loss is no more than a few percent.
+
+    - pedantic_ implies
+
+        if a standard exists the fonction is as conformant as possible whatever the
+        loss in performances can be.
+
+    - std_
+
+        is reserved to the direct call of a libc++ version of the function: this means that
+        in simd mode emulation is used. In general the performance is worse even in scalar mode.
+
+    - saturated_
+
+        is only efficient if the return type is Integral,  in which case the result is
+        properly saturated
+
+    - restricted_
+
+        is used to indicate a restrained range of validity for a function. Up to now only
+        direct trigonometic function can use this decorator which restrict their range to
+        \$f[-\pi/4, \pi/4]\$f with an important speed-up
+
+    @par Note:
+       Not "normal" values are as defined by the libc++ @c fpclassify by not returning
+       @c FP_NORMAL, the categories being :
+
+       <center>
+       | result        |  meaning              |
+       |:-------------:|:---------------------:|
+       | FP_INFINITE   |  return "Inf";        |
+       | FP_NAN        |  return "NaN";        |
+       | FP_NORMAL     |  return "normal";     |
+       | FP_SUBNORMAL  |  return "subnormal";  |
+       | FP_ZERO       |  return "zero";       |
+       </center>
   **/
 #endif
 
