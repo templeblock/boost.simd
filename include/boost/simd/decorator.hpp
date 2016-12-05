@@ -44,7 +44,7 @@ namespace boost { namespace simd
     - raw_ implies
 
        possibly big loss of accuracy, loss of correctness for not "normal" values
-       and don't care of limiting cases. The purpose of raw_ is to maximize the speed
+       and no support for limiting cases. The purpose of raw_ is to maximize the speed
        using at hand functions (often intrinsics).
 
     - regular (no decorator) implies
