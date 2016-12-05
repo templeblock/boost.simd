@@ -25,9 +25,10 @@ namespace boost { namespace simd
        modify the behaviour of some functors. Use of a functor with no decorator
        is often referred as "regular".
 
-       musl_ and plain_ also exist, but are used in an internal way.
 
-       These are pedantic_, raw_, restricted_,  saturated_, std_
+       These are pedantic_, raw_, restricted_,  saturated_, std_.
+       (musl_ and plain_ also exist, but are used in an internal way).
+
 
        if a decorator `foo_` has to be called to modify the functor `bar` the call
 
@@ -57,7 +58,7 @@ namespace boost { namespace simd
 
     - pedantic_ implies
 
-        if a standard exists the fonction is as conformant as possible whatever the
+        if a standard exists the function is as conformant as possible whatever the
         loss in performances can be.
 
     - std_
@@ -73,8 +74,8 @@ namespace boost { namespace simd
     - restricted_
 
         is used to indicate a restrained range of validity for a function. Up to now only
-        direct trigonometic function can use this decorator which restrict their range to
-        \$f[-\pi/4, \pi/4]\$f with an important speed-up
+        direct trigonometic function can use this decorator which restricts their validity range to
+        \f$[-\pi/4, \pi/4]\f$ (they return a nan outside),  but with an important speed-up.
 
     @par Note:
        Not "normal" values are as defined by the libc++ @c fpclassify by not returning
