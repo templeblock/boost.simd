@@ -10,7 +10,6 @@
 //==================================================================================================
 #ifndef BOOST_SIMD_FUNCTION_AMD_HPP_INCLUDED
 #define BOOST_SIMD_FUNCTION_AMD_HPP_INCLUDED
-#include <boost/simd/amd/amdlibm.h>
 #include <boost/simd/detail/decorator.hpp>
 
 #if defined(DOXYGEN_ONLY)
